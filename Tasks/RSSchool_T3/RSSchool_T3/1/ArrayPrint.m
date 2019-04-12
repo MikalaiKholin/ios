@@ -7,7 +7,6 @@
     NSMutableString *mResultLine = [[NSMutableString alloc] initWithString:@"["];
     
     for (int i=0; i<self.count; i++){
-        NSLog(@"%d", i);
         if ([self[i] isKindOfClass: [NSString class]]){
             [mResultLine appendFormat:@"\"%@\"", self[i]];
         }
@@ -31,8 +30,6 @@
     [mResultLine appendFormat:@"]"];
     
     NSString *resultLine = [NSString stringWithString:mResultLine];
-    
-    NSLog(@"%@", resultLine);
     
     return resultLine;
 }
