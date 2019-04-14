@@ -13,6 +13,10 @@
   [self.window setRootViewController:[DateMachine new]];
   self.window.backgroundColor = [UIColor whiteColor];
   [self.window makeKeyAndVisible];
+    
+    DateMachine *DMView = [DateMachine new];
+    [_window setRootViewController:DMView];
+    
   return YES;
 }
 
