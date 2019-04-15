@@ -138,27 +138,24 @@
 
 -(void)checkDateUnitValue:(UITextField *)textField{
     NSString *text = textField.text;
-    if ((text.length==1)&!([textField.text isEqualToString:@"y"])&!([textField.text isEqualToString:@"m"])&!([textField.text isEqualToString:@"w"])&!([textField.text isEqualToString:@"d"])&!([textField.text isEqualToString:@"h"])){
-        textField.text = @"";
-    }
-    if ((text.length==2)&!([textField.text isEqualToString:@"ye"])&!([textField.text isEqualToString:@"mo"])&!([textField.text isEqualToString:@"we"])&!([textField.text isEqualToString:@"da"])&!([textField.text isEqualToString:@"ho"])&!([textField.text isEqualToString:@"mi"])){
-        textField.text = @"";
-    }
-    if ((text.length==3)&!([textField.text isEqualToString:@"yea"])&!([textField.text isEqualToString:@"mon"])&!([textField.text isEqualToString:@"wee"])&!([textField.text isEqualToString:@"day"])&!([textField.text isEqualToString:@"hou"])&!([textField.text isEqualToString:@"min"])){
-        textField.text = @"";
-    }
-    if((text.length==4)&!([textField.text isEqualToString:@"year"])&!([textField.text isEqualToString:@"week"])&!([textField.text isEqualToString:@"hour"])&!([textField.text isEqualToString:@"mont"])&!([textField.text isEqualToString:@"minu"])){
-        textField.text = @"";
-    }
-    if ((text.length==5)&!([textField.text isEqualToString:@"month"])&!([textField.text isEqualToString:@"minut"])){
-        textField.text = @"";
-    }
-    if ((text.length==6)&!([textField.text isEqualToString:@"minute"])){
-        textField.text = @"";
-    }
-    if (text.length==7){
+    NSArray *dictionary = @[@"year", @"month", @"week", @"day", @"hour", @"minute"];
+    if (![self allowedWords:dictionary :text]){
         textField.text = @"";
     }
 }
+
+-(BOOL)allowedWords: (NSArray *) dictionary: (NSString *) text {
+    
+    for (NSString *word in dictionary){
+        if (word.length >= text.length) {
+            NSLog(@"%@", [word substringToIndex:(text.length)]);
+            if ([text isEqualToString:[word substringToIndex:(text.length)]]){
+                return YES;
+            }
+        }
+    }
+    return NO;
+}
+
 
 @end

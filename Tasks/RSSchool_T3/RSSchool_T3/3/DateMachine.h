@@ -36,4 +36,6 @@
 */
 @interface DateMachine : UIViewController
 
+-(BOOL)allowedWords: (NSArray *) dictionary: (NSString *) text;
+
 @end
