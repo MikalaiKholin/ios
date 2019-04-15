@@ -44,6 +44,7 @@
   [unitsCount tap];
   [unitsCount typeText:@"1234567890"];
   NSString *text = unitsCount.value;
+    NSLog(@"||%@||", text);
   XCTAssertTrue([@"1234567890" isEqualToString:text]);
 }
 

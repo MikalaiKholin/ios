@@ -18,47 +18,50 @@
     UITextField *startDate =[[UITextField alloc] initWithFrame:CGRectMake(5, 300, 130, 20)];
     UITextField *step =[[UITextField alloc] initWithFrame:CGRectMake(143, 300, 130, 20)];
     UITextField *dateUnit =[[UITextField alloc] initWithFrame:CGRectMake(280, 300, 130, 20)];
-    [startDate setText:@"Start date"];
-    startDate.accessibilityValue=@"Start date";
+    startDate.placeholder=@"Start date";
     startDate.layer.borderColor =[UIColor blackColor].CGColor;
     startDate.layer.borderWidth = 1.f;
     startDate.tag = 2;
-    [startDate addTarget:self action:@selector(checkStartDateValue) forControlEvents:UIControlEventEditingChanged];
-    [startDate addTarget:self action:@selector(textFieldDidBeginEditing:) forControlEvents:UIControlEventEditingDidBegin];
+    [startDate addTarget:self action:@selector(checkStartDateValue:) forControlEvents:UIControlEventEditingChanged];
     step.layer.borderColor =[UIColor blackColor].CGColor;
-    [step setText:@"Step"];
-    step.accessibilityValue=@"Step";
+    step.placeholder=@"Step";
     step.layer.borderWidth = 1.f;
     step.tag = 3;
-    [step addTarget:self action:@selector(checkStepValue) forControlEvents:UIControlEventEditingChanged];
-    [step addTarget:self action:@selector(textFieldDidBeginEditing:) forControlEvents:UIControlEventEditingDidBegin];
+    [step addTarget:self action:@selector(checkStepValue:) forControlEvents:UIControlEventEditingChanged];
     dateUnit.layer.borderColor =[UIColor blackColor].CGColor;
-    [dateUnit setText:@"Date unit"];
-    dateUnit.accessibilityValue=@"Date unit";
+    dateUnit.placeholder=@"Date unit";
     dateUnit.layer.borderWidth = 1.f;
     dateUnit.tag = 4;
-    [dateUnit addTarget:self action:@selector(textFieldDidBeginEditing:) forControlEvents:UIControlEventEditingDidBegin];
+    [dateUnit addTarget:self action:@selector(checkDateUnitValue:) forControlEvents:UIControlEventEditingChanged];
     [self.view addSubview:startDate];
     [self.view addSubview:step];
     [self.view addSubview:dateUnit];
     
     UIButton *addButton =[[UIButton alloc] initWithFrame:CGRectMake(50, 400, 100, 20)];
     UIButton *subButton =[[UIButton alloc] initWithFrame:CGRectMake(200, 400, 100, 20)];
+    addButton.accessibilityValue = @"Add";
+    subButton.accessibilityValue = @"Sub";
     [addButton setTitle:@"Add" forState:UIControlStateNormal];
     [subButton setTitle:@"Sub" forState:UIControlStateNormal];
     addButton.layer.backgroundColor = [UIColor grayColor].CGColor;
     subButton.layer.backgroundColor = [UIColor grayColor].CGColor;
-    [addButton addTarget:self action:@selector(addButtonClick:) forControlEvents:UIControlEventTouchUpInside];
-    [subButton addTarget:self action:@selector(subButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+    [addButton addTarget:self action:@selector(addOrSubButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+    [subButton addTarget:self action:@selector(addOrSubButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:addButton];
     [self.view addSubview:subButton];
 }
 
--(void)textFieldDidBeginEditing:(UITextField *)textField{
-    textField.text = @"";
-}
-
-- (void) addButtonClick:(id)sender {
+- (void) addOrSubButtonClick:(UIButton*) button {
+    
+    int n = 0;
+    
+    if ([button.accessibilityValue isEqualToString:@"Add"]){
+        n = 1;
+    }
+    else{
+        n = -1;
+    }
+    
     UILabel *dateLabel = [self.view viewWithTag:1];
     UITextField *dateUnit = [self.view viewWithTag:4];
     UITextField *step = [self.view viewWithTag:3];
@@ -67,123 +70,94 @@
     NSDate *startDate = [dateFormatter dateFromString:(@"%@", dateLabel.text)];
     if ([dateUnit.text isEqualToString:@"year"]){
         NSDateComponents *yearComponent = [[NSDateComponents alloc] init];
-        yearComponent.year = [step.text integerValue];
+        yearComponent.year = [step.text integerValue]*n;
         NSCalendar *theCalendar = [NSCalendar currentCalendar];
         NSDate *nextDate = [theCalendar dateByAddingComponents:yearComponent toDate:startDate options:0];
         [dateLabel setText:(@"%@", [dateFormatter stringFromDate:nextDate])];        
     }
     if ([dateUnit.text isEqualToString:@"month"]){
         NSDateComponents *monthComponent = [[NSDateComponents alloc] init];
-        monthComponent.month = [step.text integerValue];
+        monthComponent.month = [step.text integerValue]*n;
         NSCalendar *theCalendar = [NSCalendar currentCalendar];
         NSDate *nextDate = [theCalendar dateByAddingComponents:monthComponent toDate:startDate options:0];
         [dateLabel setText:(@"%@", [dateFormatter stringFromDate:nextDate])];
     }
     if ([dateUnit.text isEqualToString:@"week"]){
         NSDateComponents *weekComponent = [[NSDateComponents alloc] init];
-        weekComponent.day = [step.text integerValue]*7;
+        weekComponent.day = [step.text integerValue]*7*n;
         NSCalendar *theCalendar = [NSCalendar currentCalendar];
         NSDate *nextDate = [theCalendar dateByAddingComponents:weekComponent toDate:startDate options:0];
         [dateLabel setText:(@"%@", [dateFormatter stringFromDate:nextDate])];
     }
     if ([dateUnit.text isEqualToString:@"day"]){
         NSDateComponents *dayComponent = [[NSDateComponents alloc] init];
-        dayComponent.day = [step.text integerValue];
+        dayComponent.day = [step.text integerValue]*n;
         NSCalendar *theCalendar = [NSCalendar currentCalendar];
         NSDate *nextDate = [theCalendar dateByAddingComponents:dayComponent toDate:startDate options:0];
         [dateLabel setText:(@"%@", [dateFormatter stringFromDate:nextDate])];
     }
     if ([dateUnit.text isEqualToString:@"hour"]){
         NSDateComponents *hourComponent = [[NSDateComponents alloc] init];
-        hourComponent.hour = [step.text integerValue];
+        hourComponent.hour = [step.text integerValue]*n;
         NSCalendar *theCalendar = [NSCalendar currentCalendar];
         NSDate *nextDate = [theCalendar dateByAddingComponents:hourComponent toDate:startDate options:0];
         [dateLabel setText:(@"%@", [dateFormatter stringFromDate:nextDate])];
     }
     if ([dateUnit.text isEqualToString:@"minute"]){
         NSDateComponents *minuteComponent = [[NSDateComponents alloc] init];
-        minuteComponent.minute = [step.text integerValue];
+        minuteComponent.minute = [step.text integerValue]*n;
         NSCalendar *theCalendar = [NSCalendar currentCalendar];
         NSDate *nextDate = [theCalendar dateByAddingComponents:minuteComponent toDate:startDate options:0];
         [dateLabel setText:(@"%@", [dateFormatter stringFromDate:nextDate])];
     }
 }
 
-- (void) subButtonClick:(id)sender {
-    UILabel *dateLabel = [self.view viewWithTag:1];
-    UITextField *dateUnit = [self.view viewWithTag:4];
-    UITextField *step = [self.view viewWithTag:3];
+- (void) checkStartDateValue:(UITextField *)textField{
     NSDateFormatter *dateFormatter = [NSDateFormatter new];
     [dateFormatter setDateFormat:@"dd/MM/yyyy HH:mm"];
-    NSDate *startDate = [dateFormatter dateFromString:(@"%@", dateLabel.text)];
-    //year, month, week, day, hour, minute.
-    if ([dateUnit.text isEqualToString:@"year"]){
-        NSDateComponents *yearComponent = [[NSDateComponents alloc] init];
-        yearComponent.year = -[step.text integerValue];
-        NSCalendar *theCalendar = [NSCalendar currentCalendar];
-        NSDate *nextDate = [theCalendar dateByAddingComponents:yearComponent toDate:startDate options:0];
-        [dateLabel setText:(@"%@", [dateFormatter stringFromDate:nextDate])];
-    }
-    if ([dateUnit.text isEqualToString:@"month"]){
-        NSDateComponents *monthComponent = [[NSDateComponents alloc] init];
-        monthComponent.month = -[step.text integerValue];
-        NSCalendar *theCalendar = [NSCalendar currentCalendar];
-        NSDate *nextDate = [theCalendar dateByAddingComponents:monthComponent toDate:startDate options:0];
-        [dateLabel setText:(@"%@", [dateFormatter stringFromDate:nextDate])];
-    }
-    if ([dateUnit.text isEqualToString:@"week"]){
-        NSDateComponents *weekComponent = [[NSDateComponents alloc] init];
-        weekComponent.day = -[step.text integerValue]*7;
-        NSCalendar *theCalendar = [NSCalendar currentCalendar];
-        NSDate *nextDate = [theCalendar dateByAddingComponents:weekComponent toDate:startDate options:0];
-        [dateLabel setText:(@"%@", [dateFormatter stringFromDate:nextDate])];
-    }
-    if ([dateUnit.text isEqualToString:@"day"]){
-        NSDateComponents *dayComponent = [[NSDateComponents alloc] init];
-        dayComponent.day = -[step.text integerValue];
-        NSCalendar *theCalendar = [NSCalendar currentCalendar];
-        NSDate *nextDate = [theCalendar dateByAddingComponents:dayComponent toDate:startDate options:0];
-        [dateLabel setText:(@"%@", [dateFormatter stringFromDate:nextDate])];
-    }
-    if ([dateUnit.text isEqualToString:@"hour"]){
-        NSDateComponents *hourComponent = [[NSDateComponents alloc] init];
-        hourComponent.hour = -[step.text integerValue];
-        NSCalendar *theCalendar = [NSCalendar currentCalendar];
-        NSDate *nextDate = [theCalendar dateByAddingComponents:hourComponent toDate:startDate options:0];
-        [dateLabel setText:(@"%@", [dateFormatter stringFromDate:nextDate])];
-    }
-    if ([dateUnit.text isEqualToString:@"minute"]){
-        NSDateComponents *minuteComponent = [[NSDateComponents alloc] init];
-        minuteComponent.minute = -[step.text integerValue];
-        NSCalendar *theCalendar = [NSCalendar currentCalendar];
-        NSDate *nextDate = [theCalendar dateByAddingComponents:minuteComponent toDate:startDate options:0];
-        [dateLabel setText:(@"%@", [dateFormatter stringFromDate:nextDate])];
-    }
-}
-
-
-
-- (void) checkStartDateValue{
-    UITextField *startDateText = [self.view viewWithTag:2];
-    NSDateFormatter *dateFormatter = [NSDateFormatter new];
-    [dateFormatter setDateFormat:@"dd/MM/yyyy HH:mm"];
-    NSDate *startDate = [dateFormatter dateFromString:(@"%@", startDateText.text)];
+    NSDate *startDate = [dateFormatter dateFromString:(@"%@", textField.text)];
     if (startDate!=0){
         UILabel *label = [self.view viewWithTag:1];
         [label setText:(@"%@", [dateFormatter stringFromDate:startDate])];
     }
 }
 
-- (void) checkStepValue{
-    UITextField *step = [self.view viewWithTag:3];
+- (void) checkStepValue:(UITextField *)textField{
     NSCharacterSet *numberCharSet = [NSCharacterSet characterSetWithCharactersInString:@"0123456789"];
-    NSString *stepStr = step.text;
+    NSString *stepStr = textField.text;
     if (stepStr.length>0){
-        unichar c = [stepStr characterAtIndex:(stepStr.length-1)];
-        if (![numberCharSet characterIsMember:c]) {
-            stepStr = [stepStr substringToIndex:(stepStr.length - 1)];
-            step.text = stepStr;
+        for (int i=0; i<stepStr.length; i++){
+            unichar c = [stepStr characterAtIndex:i];
+            if (![numberCharSet characterIsMember:c]) {
+                stepStr = [stepStr substringToIndex:i];
+                textField.text = stepStr;
+            }
         }
+    }
+}
+
+-(void)checkDateUnitValue:(UITextField *)textField{
+    NSString *text = textField.text;
+    if ((text.length==1)&!([textField.text isEqualToString:@"y"])&!([textField.text isEqualToString:@"m"])&!([textField.text isEqualToString:@"w"])&!([textField.text isEqualToString:@"d"])&!([textField.text isEqualToString:@"h"])){
+        textField.text = @"";
+    }
+    if ((text.length==2)&!([textField.text isEqualToString:@"ye"])&!([textField.text isEqualToString:@"mo"])&!([textField.text isEqualToString:@"we"])&!([textField.text isEqualToString:@"da"])&!([textField.text isEqualToString:@"ho"])&!([textField.text isEqualToString:@"mi"])){
+        textField.text = @"";
+    }
+    if ((text.length==3)&!([textField.text isEqualToString:@"yea"])&!([textField.text isEqualToString:@"mon"])&!([textField.text isEqualToString:@"wee"])&!([textField.text isEqualToString:@"day"])&!([textField.text isEqualToString:@"hou"])&!([textField.text isEqualToString:@"min"])){
+        textField.text = @"";
+    }
+    if((text.length==4)&!([textField.text isEqualToString:@"year"])&!([textField.text isEqualToString:@"week"])&!([textField.text isEqualToString:@"hour"])&!([textField.text isEqualToString:@"mont"])&!([textField.text isEqualToString:@"minu"])){
+        textField.text = @"";
+    }
+    if ((text.length==5)&!([textField.text isEqualToString:@"month"])&!([textField.text isEqualToString:@"minut"])){
+        textField.text = @"";
+    }
+    if ((text.length==6)&!([textField.text isEqualToString:@"minute"])){
+        textField.text = @"";
+    }
+    if (text.length==7){
+        textField.text = @"";
     }
 }
 
