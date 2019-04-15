@@ -148,7 +148,6 @@
     
     for (NSString *word in dictionary){
         if (word.length >= text.length) {
-            NSLog(@"%@", [word substringToIndex:(text.length)]);
             if ([text isEqualToString:[word substringToIndex:(text.length)]]){
                 return YES;
             }
