@@ -43,7 +43,7 @@
     [rx replaceMatchesInString:phoneNumber options:0 range:NSMakeRange(0, [phoneNumber length]) withTemplate:@""];
     //phoneNumber = [phoneNumber stringByReplacingOccurrencesOfString:@"+" withString:@""];
     
-    phoneNumber = [self textFromNumber:phoneNumber];
+    phoneNumber =  [self formatPhoneNumber:phoneNumber];
     
     NSLog(@"%@", phoneNumber);
     
@@ -53,7 +53,7 @@
     [phoneNumber release];
 }
 
--(NSMutableString*) textFromNumber: (NSString*)number{
+-(NSString*) formatPhoneNumber: (NSString*)number{
     NSArray<Country *> *countries = [[NSArray alloc] initWithArray:[self countriesList]];
     
     NSMutableString *phoneNumberWithFormat = [[NSMutableString alloc] initWithString:@""];
@@ -61,8 +61,10 @@
     for (Country *country in countries){
         if (country.code.length <= number.length){
             if ([country.code isEqualToString:[number substringToIndex:(country.code.length)]]){
-                [phoneNumberWithFormat appendFormat:[self phoneNumberFormat:[number substringFromIndex:country.code.length] :country]];
-                return phoneNumberWithFormat;
+                [phoneNumberWithFormat appendFormat:[self formatLocalPhoneNumber:[number substringFromIndex:country.code.length] :country]];
+                NSString *result =[[[NSString alloc] initWithString:phoneNumberWithFormat]autorelease];
+                [phoneNumberWithFormat release];
+                return result;
             }
         }
     }
@@ -72,13 +74,17 @@
     [phoneNumberWithFormat appendFormat:@"+"];
     if (number.length>=12){
         [phoneNumberWithFormat appendFormat:(@"%@", [number substringToIndex:12])];
-        return phoneNumberWithFormat;
+        NSString *result =[[[NSString alloc] initWithString:phoneNumberWithFormat]autorelease];
+        [phoneNumberWithFormat release];
+        return result;
     }
     [phoneNumberWithFormat appendFormat:(@"%@", number)];
-    return phoneNumberWithFormat;
+    NSString *result =[[[NSString alloc] initWithString:phoneNumberWithFormat]autorelease];
+    [phoneNumberWithFormat release];
+    return result;
 }
 
--(NSString*) phoneNumberFormat: (NSString*)number :(Country*) country{
+-(NSString*) formatLocalPhoneNumber: (NSString*)number :(Country*) country{
     NSMutableString *phoneNumber = [[NSMutableString alloc] initWithString:@""];
     //[phoneNumber appendFormat:(@"%@", country.flag)];
     //[phoneNumber appendFormat:@"+"];
