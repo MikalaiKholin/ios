@@ -6,6 +6,10 @@
 //  Copyright © 2019 iOSLab. All rights reserved.
 //
 
+
+//
+
+
 #import "PhoneNumberViewController.h"
 
 @implementation PhoneNumberViewController
@@ -14,7 +18,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    
+    self.view.userInteractionEnabled = YES;
     
     UITextField *phoneNumber =[[UITextField alloc] initWithFrame:CGRectMake(5, 300, 300, 20)];
     phoneNumber.placeholder = @"Phone Number";
@@ -45,9 +49,9 @@
     
     phoneNumber =  [self formatPhoneNumber:phoneNumber];
     
-    NSLog(@"%@", phoneNumber);
+    //NSLog(@"%@", phoneNumber);
     
-    phoneNumberTextField.text = @"";
+    //phoneNumberTextField.text = @"";
     phoneNumberTextField.text = [[NSString alloc]initWithString:phoneNumber];
     
     [phoneNumber release];
@@ -90,7 +94,7 @@
     //[phoneNumber appendFormat:@"+"];
     //[phoneNumber appendFormat:(@"%@ ", country.code)];
     
-    NSLog(@"number -%@-", number);
+    //NSLog(@"number -%@-", number);
     NSString *mask = [NSString new];
     
     
@@ -120,11 +124,11 @@
         if (i>=country.numberOfDigitsInPhoneNumber){
             break;
         }
-        NSLog(@"%@", phoneNumber);
+        //NSLog(@"%@", phoneNumber);
         while (!([[NSString stringWithFormat:@"%c", [mask characterAtIndex:j]] isEqualToString:@"x"])&(j<mask.length-1)){
             [phoneNumber appendFormat:[NSString stringWithFormat:@"%c", [mask characterAtIndex:j]]];
             j++;
-            NSLog(@"%d", j);
+            //NSLog(@"%d", j);
         }
         NSLog(@"%@", phoneNumber);
         [phoneNumber appendFormat:[NSString stringWithFormat:@"%c", [number characterAtIndex:i]]];
